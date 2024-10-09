@@ -61,17 +61,14 @@ class Bot:
         await update.message.reply_text(f"Position updated to: {self.lat}, {self.long}")
 
     def start(self):
-        # Create the Application and pass it your bot's token.
         application = Application.builder().token(***REMOVED***).build()
 
-        # on different commands - answer in Telegram
         application.add_handler(CommandHandler("status", self.status))
         application.add_handler(CommandHandler("search", self.search))
         application.add_handler(CommandHandler("book", self.book))
         application.add_handler(MessageHandler(filters.TEXT, self.distance))
         application.add_handler(MessageHandler(filters.LOCATION, self.location))
 
-        # Run the bot until the user presses Ctrl-C
         application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
