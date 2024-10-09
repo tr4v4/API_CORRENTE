@@ -14,7 +14,7 @@ class Bot:
         self.long = None
         self.distance_tolerance = 2500
         self.zoes = []
-        self.notify_interval = 10
+        self.notify_interval = 600
         self.job_notify = None
         self.chat_id = None
 
