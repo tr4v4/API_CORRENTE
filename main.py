@@ -52,6 +52,8 @@ class Bot:
             self.zoes.clear()
 
     async def distance(self, update, context):
+        if not update.message.text.isnumeric() or int(update.message.text) < 1:
+            await update.message.reply_text("Insert a valid distance.")
         new_distance = int(update.message.text)
         await update.message.reply_text(f"Distance tolerance updated to: {new_distance}")
         self.distance_tolerance = new_distance
