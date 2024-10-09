@@ -14,12 +14,23 @@ class Bot:
         self.long = None
         self.distance_tolerance = 2500
         self.zoes = []
+        self.notify_interval = 10
+        self.job_notify = None
+        self.chat_id = None
 
     async def _info_zoe(self, i, zoe, update, context):
         await update.message.reply_text(f"{i}° ZOE\n"
-                                        f"Distance: {int(zoe['distance'])} m\n"
-                                        f"Address: {zoe['address']}")
+                                        f"Distance: {int(zoe['distance'])} ms\n"
+                                        f"Address: {zoe['address']}\n"
+                                        f"Fuel: {int(zoe['range'])} kms")
         await update.message.reply_location(zoe["position"]["latitude"], zoe["position"]["longitude"])
+
+    async def _notify(self, context):
+        gz = GetZoe(self.lat, self.long, self.distance_tolerance, BEARER_***REMOVED***)
+        self.zoes = gz.get_zoes()
+        num_zoes = len(self.zoes)
+        if num_zoes > 0:
+            await context.bot.send_message(chat_id=self.chat_id, text=f"{num_zoes} ZOE(s) available nearby!")
 
     async def status(self, update, context):
         await update.message.reply_text(f"The current status is:\n"
@@ -60,6 +71,8 @@ class Bot:
 
     async def location(self, update, context):
         self.lat, self.long = update.message.location.latitude, update.message.location.longitude
+        self.chat_id = update.message.chat_id
+        self.job_notify.enabled = True
         await update.message.reply_text(f"Position updated to: {self.lat}, {self.long}")
 
     def start(self):
@@ -70,6 +83,9 @@ class Bot:
         application.add_handler(CommandHandler("book", self.book))
         application.add_handler(MessageHandler(filters.TEXT, self.distance))
         application.add_handler(MessageHandler(filters.LOCATION, self.location))
+
+        self.job_notify = application.job_queue.run_repeating(self._notify, interval=self.notify_interval, first=self.notify_interval)
+        self.job_notify.enabled = False
 
         application.run_polling(allowed_updates=Update.ALL_TYPES)
 

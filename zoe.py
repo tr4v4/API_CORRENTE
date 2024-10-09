@@ -32,13 +32,15 @@ class GetZoe:
             distance = vehicle["distance"]
             address = vehicle["address"]
             position = vehicle["position"]
+            range = vehicle["vehicle"]["range"]
             if model == "ZOE" and distance <= self.dist_tol:
                 zoe = {"id": id,
                     "model": model,
                     "plate": plate,
                     "distance": distance,
                     "address": address,
-                    "position": position}
+                    "position": position,
+                    "range": range}
                 zoes.append(zoe)
         return zoes
 
