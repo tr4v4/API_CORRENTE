@@ -1,7 +1,7 @@
 from telegram import ForceReply, Update, Message
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 from zoe import BookZoe, GetZoe
-from tokens import *
+from tokens import TOKEN, BEARER_TOKEN            # CREATE FILE tokens.py !
 
 
 class Bot:
