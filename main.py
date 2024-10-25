@@ -1,11 +1,7 @@
 from telegram import ForceReply, Update, Message
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 from zoe import BookZoe, GetZoe
-
-
-# Telegram bot constants
-***REMOVED*** = "***REMOVED***"
-BEARER_***REMOVED*** = "***REMOVED***"
+from tokens import *
 
 
 class Bot:
@@ -26,7 +22,7 @@ class Bot:
         await update.message.reply_location(zoe["position"]["latitude"], zoe["position"]["longitude"])
 
     async def _notify(self, context):
-        gz = GetZoe(self.lat, self.long, self.distance_tolerance, BEARER_***REMOVED***)
+        gz = GetZoe(self.lat, self.long, self.distance_tolerance, BEARER_TOKEN)
         self.zoes = gz.get_zoes()
         num_zoes = len(self.zoes)
         if num_zoes > 0:
@@ -41,7 +37,7 @@ class Bot:
         if self.lat is None or self.long is None:
             await update.message.reply_text("Send the position first!")
         else:
-            gz = GetZoe(self.lat, self.long, self.distance_tolerance, BEARER_***REMOVED***)
+            gz = GetZoe(self.lat, self.long, self.distance_tolerance, BEARER_TOKEN)
             self.zoes = gz.get_zoes()
             if len(self.zoes) < 1:
                 await update.message.reply_text("No ZEO nearby...")
@@ -54,7 +50,7 @@ class Bot:
         else:
             index = int(context.args[0]) - 1
             plate = self.zoes[index]["plate"]
-            bz = BookZoe(plate, BEARER_***REMOVED***)
+            bz = BookZoe(plate, BEARER_TOKEN)
             response_code = bz.book_zoe()
             if response_code == 200:
                 await update.message.reply_text(f"{index}° ZEO booked!")
@@ -76,7 +72,7 @@ class Bot:
         await update.message.reply_text(f"Position updated to: {self.lat}, {self.long}")
 
     def start(self):
-        application = Application.builder().token(***REMOVED***).build()
+        application = Application.builder().token(TOKEN).build()
 
         application.add_handler(CommandHandler("status", self.status))
         application.add_handler(CommandHandler("search", self.search))
